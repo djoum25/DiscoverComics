@@ -1,8 +1,6 @@
 package com.project.djoum.discovercomics.activities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -11,32 +9,29 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.project.djoum.discovercomics.R;
-import com.project.djoum.discovercomics.model.comics.Comics;
-import com.project.djoum.discovercomics.utilities.NetworkUtils;
-
-import org.json.JSONException;
-
-import java.io.IOException;
-import java.net.URL;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import com.project.djoum.discovercomics.fragment.MainFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
     private static final String TAG = "test";
-    private final String PUBLIC_KEY = "add public key here";
-    private final String PRIVATE_KEY = "add private key there";
+    //    private final String PUBLIC_KEY = getString(R.string.public_key);
+//    private final String PRIVATE_KEY = getString(R.string.private_key);
+    private TextView mUserName;
+    private TextView mUserEmail;
+    
+    private FirebaseAuth mAuth;
+    private FirebaseUser mUser;
+    private View mHearderView;
+    private NavigationView mNavigationView;
+    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,45 +39,97 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        mAuth = FirebaseAuth.getInstance();
+        mUser = mAuth.getCurrentUser();
+        
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-        
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        
-        if (isConnectionAvaillable()) {
-            
-            try {
-                NetworkUtils.queryUrl(NetworkUtils.comicsUrl(2018, "title",
-                        PUBLIC_KEY, PRIVATE_KEY)).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, IOException e) {
-                        Log.d(TAG, "onFailure: " + e.getMessage());
-                    }
-                    
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        try {
-                            List<Comics> comics = Comics.jsonToComics(response.body().string());
-                            for (Comics comic : comics) {
-                                Log.d(TAG, "onResponse: " + comic.getTitle());
-                                Log.d(TAG, "onResponse: description " + comic.getDescription());
-                                Log.d(TAG, "onResponse: thumbnail " + comic.getThumbnail());
-                                Log.d(TAG, "onResponse: image " + comic.getImages());
-                                Log.d(TAG, "onResponse: text " + comic.getTextObjects());
-                                Log.d(TAG, "\t\t\t=========================end====================\n\n\n\n");
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            } catch (IOException | NoSuchAlgorithmException e) {
-                e.printStackTrace();
+        mNavigationView = (NavigationView) findViewById(R.id.nav_view);
+        mHearderView = mNavigationView.getHeaderView(0);
+        mNavigationView.setNavigationItemSelectedListener(this);
+        //init main fragment
+        initialize();
+
+//        try {
+//            Log.d(TAG, "onCreate: series " +
+//                               NetworkUtils.seriesUrl("title", PUBLIC_KEY, PRIVATE_KEY));
+//            Log.d(TAG, "onCreate: a serie " + NetworkUtils.seriesUrl(7, PUBLIC_KEY, PRIVATE_KEY));
+//            Log.d(TAG, "onCreate: single comic " + NetworkUtils.comicUrl(53427, PUBLIC_KEY, PRIVATE_KEY));
+////
+//            Log.d(TAG, "onCreate: characters " + NetworkUtils.charactersUrl("name", PUBLIC_KEY, PRIVATE_KEY));
+//        } catch (NoSuchAlgorithmException | MalformedURLException e) {
+//            e.printStackTrace();
+//        }
+
+//https://gateway.marvel.com:443/v1/public/series?contains=digital%20comic&orderBy=title
+//         &apikey=006ac57c9d265881686e05e0c49b6e5b
+//        if (NetworkUtils.isConnectionAvaillable(this)) {
+////            try {
+////                NetworkUtils.queryUrl(NetworkUtils.comicsUrl(2018, "title",
+////                        getString(R.string.public_key), getString(R.string.private_key))).enqueue(new Callback() {
+////                    @Override
+////                    public void onFailure(@NonNull Call call, IOException e) {
+////                        Log.d(TAG, "onFailure: " + e.getMessage());
+////                    }
+////
+////                    @Override
+////                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+////                        try {
+////                            List<Comics> comics = JsonUtils.jsonToComics(response.body().string());
+////                            for (Comics comic : comics) {
+////                                Log.d(TAG, "onResponse: id " + comic.getId());
+////                                Log.d(TAG, "onResponse: " + comic.getTitle());
+////                                long timeStamp = System.currentTimeMillis();
+////                                Log.d(TAG, "onResponse: ressouUri " +
+////                                                   NetworkUtils.comicsResourceUri(comic.getResourceURI(), timeStamp, getString(R.string.public_key), getString(R.string.private_key)));
+////                                Log.d(TAG, "onResponse: description " + comic.getDescription());
+////                                Log.d(TAG, "onResponse: thumbnail " + comic.getThumbnail());
+////                                Log.d(TAG, "\t\t\t=========================images====================\n\n\n\n");
+////                                for (Image image : comic.getImages()) {
+////                                    Log.d(TAG, "onResponse: " + image.imageToDisplay(getString(R.string.image_standard_fantastic)));
+////                                }
+////                                Log.d(TAG, "\t\t\t=========================images====================\n\n\n\n");
+////                                Log.d(TAG, "onResponse: text " + comic.getTextObjects());
+////                                Log.d(TAG, "\t\t\t=========================end====================\n\n\n\n");
+////                            }
+////                        } catch (JSONException | NoSuchAlgorithmException e) {
+////                            e.printStackTrace();
+////                        }
+////                    }
+////                });
+////            } catch (IOException | NoSuchAlgorithmException e) {
+////                e.printStackTrace();
+////            }
+////        }
+    }
+    
+    public void initialize() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.main_container, MainFragment.newInstance())
+                .addToBackStack(null)
+                .commit();
+    }
+    
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mUserName = mHearderView.findViewById(R.id.user_name);
+        mUserEmail = mHearderView.findViewById(R.id.user_email);
+        if (mUser != null) {
+            // TODO: 10/22/18 set the user name
+            mUserName.setText("set the user name here");
+            mUserEmail.setText(mUser.getEmail());
+            if (mNavigationView != null) {
+                Menu menu = mNavigationView.getMenu();
+                menu.findItem(R.id.nav_sign_in).setTitle(R.string.sign_out);
             }
+        } else {
+            mUserEmail.setText(null);
+            mUserName.setText(null);
         }
     }
     
@@ -105,16 +152,20 @@ public class MainActivity extends AppCompatActivity
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        
-        //noinspection SimplifiableIfStatement
+    
         if (id == R.id.action_settings) {
             return true;
+        } else if (id == R.id.action_sign_out) {
+            mAuth.signOut();
+            mUserName.setText(null);
+            mUserEmail.setText(null);
+            if (mNavigationView != null) {
+                Menu menu = mNavigationView.getMenu();
+                menu.findItem(R.id.nav_sign_in).setTitle(R.string.sign_in);
+            }
+            return true;
         }
-        
         return super.onOptionsItemSelected(item);
     }
     
@@ -123,18 +174,23 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+    
+        if (id == R.id.nav_sign_in) {
+            if (mUser == null) {
+                startActivity(new Intent(this, LoginActivity.class));
+                finish();
+            } else {
+                mAuth.signOut();
+                startActivity(new Intent(this, MainActivity.class));
+                finish();
+            }
+        } else if (id == R.id.nav_series) {
         
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_characters) {
         
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.nav_favorites) {
         
-        } else if (id == R.id.nav_manage) {
-        
-        } else if (id == R.id.nav_share) {
-        
-        } else if (id == R.id.nav_send) {
+        } else if (id == R.id.nav_search) {
         
         }
         
@@ -142,21 +198,15 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+//    public boolean isConnectionAvaillable() {
+//        ConnectivityManager connectivityManager =
+//                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
+//        if (connectivityManager != null) {
+//            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
+//            return networkInfo != null && networkInfo.isConnectedOrConnecting();
+//        }
+//        return false;
+//    }
     
-    public boolean isConnectionAvaillable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) this.getSystemService(Context.CONNECTIVITY_SERVICE);
-        if (connectivityManager != null) {
-            NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-            return networkInfo != null && networkInfo.isConnectedOrConnecting();
-        }
-        return false;
-    }
-    
-    public String queryUrl(URL myUrl) throws IOException {
-        OkHttpClient client = new OkHttpClient();
-        Request request = new Request.Builder().url(myUrl).build();
-        Response response = client.newCall(request).execute();
-        return response.body().string();
-    }
 }

@@ -13,19 +13,15 @@ import java.util.List;
 public class Comics implements Parcelable {
     
     public final static Parcelable.Creator<Comics> CREATOR = new Creator<Comics>() {
-        
-        
         @SuppressWarnings({
                 "unchecked"
         })
         public Comics createFromParcel(Parcel in) {
             return new Comics(in);
         }
-        
         public Comics[] newArray(int size) {
             return (new Comics[size]);
         }
-        
     };
     private long id;
     private String name;
@@ -33,8 +29,8 @@ public class Comics implements Parcelable {
     private String modified;
     private Thumbnail thumbnail;
     private String resourceURI;
-    private Comics_ comics;
-    private Series series;
+    private MarvelCollections mCollections;
+    private MarvelCollections series;
     private Stories stories;
     private Events events;
     private List<Url> urls = null;
@@ -46,8 +42,8 @@ public class Comics implements Parcelable {
         this.modified = ((String) in.readValue((String.class.getClassLoader())));
         this.thumbnail = ((Thumbnail) in.readValue((Thumbnail.class.getClassLoader())));
         this.resourceURI = ((String) in.readValue((String.class.getClassLoader())));
-        this.comics = ((Comics_) in.readValue((Comics_.class.getClassLoader())));
-        this.series = ((Series) in.readValue((Series.class.getClassLoader())));
+        this.mCollections = ((MarvelCollections) in.readValue((MarvelCollections.class.getClassLoader())));
+        this.series = ((MarvelCollections) in.readValue((MarvelCollections.class.getClassLoader())));
         this.stories = ((Stories) in.readValue((Stories.class.getClassLoader())));
         this.events = ((Events) in.readValue((Events.class.getClassLoader())));
         in.readList(this.urls, (com.project.djoum.discovercomics.model.comics.Url.class.getClassLoader()));
@@ -69,10 +65,12 @@ public class Comics implements Parcelable {
      * @param events
      * @param description
      * @param name
-     * @param comics
+     * @param collections
      * @param modified
      */
-    public Comics(long id, String name, String description, String modified, Thumbnail thumbnail, String resourceURI, Comics_ comics, Series series, Stories stories, Events events, List<Url> urls) {
+    public Comics(long id, String name, String description, String modified,
+                  Thumbnail thumbnail, String resourceURI, MarvelCollections collections,
+                  MarvelCollections series, Stories stories, Events events, List<Url> urls) {
         super();
         this.id = id;
         this.name = name;
@@ -80,7 +78,7 @@ public class Comics implements Parcelable {
         this.modified = modified;
         this.thumbnail = thumbnail;
         this.resourceURI = resourceURI;
-        this.comics = comics;
+        this.mCollections = collections;
         this.series = series;
         this.stories = stories;
         this.events = events;
@@ -135,19 +133,19 @@ public class Comics implements Parcelable {
         this.resourceURI = resourceURI;
     }
     
-    public Comics_ getComics() {
-        return comics;
+    public MarvelCollections getComics() {
+        return mCollections;
     }
     
-    public void setComics(Comics_ comics) {
-        this.comics = comics;
+    public void setComics(MarvelCollections comics) {
+        this.mCollections = comics;
     }
     
-    public Series getSeries() {
+    public MarvelCollections getSeries() {
         return series;
     }
     
-    public void setSeries(Series series) {
+    public void setSeries(MarvelCollections series) {
         this.series = series;
     }
     
@@ -182,7 +180,7 @@ public class Comics implements Parcelable {
         dest.writeValue(modified);
         dest.writeValue(thumbnail);
         dest.writeValue(resourceURI);
-        dest.writeValue(comics);
+        dest.writeValue(mCollections);
         dest.writeValue(series);
         dest.writeValue(stories);
         dest.writeValue(events);
@@ -192,5 +190,4 @@ public class Comics implements Parcelable {
     public int describeContents() {
         return 0;
     }
-    
 }

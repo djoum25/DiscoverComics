@@ -1,7 +1,11 @@
 package com.project.djoum.discovercomics.model.comics;
 
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class Image implements Parcelable {
     
@@ -66,8 +70,26 @@ public class Image implements Parcelable {
         return 0;
     }
     
+    /**
+     * @return the standard image
+     */
     @Override
     public String toString() {
         return path.concat(".").concat(extension);
     }
+    
+    /**
+     * @param aspectRationOfImage of the image
+     * @return the complete string address for the image
+     * to display with the chosen aspect ration
+     */
+    public URL imageToDisplay(String aspectRationOfImage) throws MalformedURLException {
+        Uri uri = Uri.parse(path)
+                          .buildUpon()
+                          .appendEncodedPath(aspectRationOfImage)
+                          .build();
+        return new URL(uri.toString().concat(".").concat(extension));
+    }
 }
+
+//http://i.annihil.us/u/prod/marvel/i/mg/3/40/4bb4680432f73/portrait_xlarge.jpg

@@ -6,4 +6,56 @@
     <string name="nav_header_subtitle">android.studio@android.com</string>
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
+
+    <!--portrait aspect ratio of the images-->
+    <string name="image_portrait_small">portrait_small</string>
+    <string name="image_portrait_medium">portrait_medium</string>
+    <string name="image_portrait_xlarge">portrait_xlarge</string>
+    <string name="image_portrait_fantastic">portrait_fantastic</string>
+    <string name="image_portrait_uncanny">portrait_uncanny</string>
+    <string name="image_portrait_incredible">portrait_incredible</string>
+
+    <!--square aspect ratio of the image-->
+    <string name="image_standard_small">standard_small</string>
+    <string name="image_standard_medium">standard_medium</string>
+    <string name="image_standard_xlarge">standard_xlarge</string>
+    <string name="image_standard_fantastic">standard_fantastic</string>
+    <string name="image_standard_large">standard_large</string>
+    <string name="image_standard_amazing">standard_amazing</string>
+
+    <!--square aspect ratio of the image-->
+    <string name="image_landscape_small">landscape_small</string>
+    <string name="image_landscape_medium">landscape_medium</string>
+    <string name="image_landscape_xlarge">landscape_xlarge</string>
+    <string name="image_landscape_large">landscape_large</string>
+    <string name="image_landscape_amazing">landscape_amazing</string>
+    <string name="image_landscape_incredible">landscape_incredible</string>
+    <string name="title_activity_login">Sign in</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="sign_in">Sign In</string>
+    <string name="series">Series</string>
+    <string name="characters">Characters</string>
+    <string name="favorites">Favorites</string>
+    <string name="search">Search</string>
+    <string name="sign_up">Sign up</string>
+    <string name="create_an_account">Create an account</string>
+    <string name="sign_out">Sign out</string>
+    <string name="email_registration">Register</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="register">Register</string>
+    <string name="log_in">Log in</string>
+    <string name="logo">logo</string>
+    
+
 </resources>

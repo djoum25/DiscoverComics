@@ -3,11 +3,6 @@ package com.project.djoum.discovercomics.model.comics;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class Comics implements Parcelable {
@@ -156,97 +151,14 @@ public class Comics implements Parcelable {
     }
     
     public Comics(long id, String title, String description, List<TextObject> myObject,
-                  Thumbnail thumbnail, List<Image> images) {
+                  String resourceURI, Thumbnail thumbnail, List<Image> images) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.textObjects = myObject;
+        this.resourceURI = resourceURI;
         this.thumbnail = thumbnail;
         this.images = images;
-    }
-    
-    public static List<Comics> jsonToComics(String result) throws JSONException {
-        List<Comics> comicsList = new ArrayList<>();
-        JSONObject comicsOject = new JSONObject(result);
-        String title = null;
-        long id = 0;
-        String description = null;
-        JSONObject jsonObject = null;
-        String path = null;
-        String extension = null;
-        List<Image> images = null;
-        List<TextObject> textObjectList = null;
-        
-        if (comicsOject.has("data")) {
-            JSONObject data = comicsOject.getJSONObject("data");
-            if (data.has("results")) {
-                JSONArray results = data.getJSONArray("results");
-                for (int i = 0; i < results.length(); i++) {
-                    jsonObject = results.getJSONObject(i);
-                    if (jsonObject.has("id")) {
-                        id = jsonObject.getLong("id");
-                    }
-                    if (jsonObject.has("title")) {
-                        title = jsonObject.getString("title");
-                    }
-                    if (jsonObject.has("description")) {
-                        description = jsonObject.getString("description");
-                    }
-                    if (jsonObject.has("thumbnail")) {
-                        JSONObject thumbnail = jsonObject.getJSONObject("thumbnail");
-                        if (thumbnail.has("path")) {
-                            path = thumbnail.getString("path");
-                        }
-                        if (thumbnail.has("extension")) {
-                            extension = thumbnail.getString("extension");
-                        }
-                    }
-                    
-                    if (jsonObject.has("textObjects")) {
-                        JSONArray textObjectsArray = jsonObject.getJSONArray("textObjects");
-                        textObjectList = getTextObject(textObjectsArray);
-                    }
-                    
-                    if (jsonObject.has("images")) {
-                        JSONArray imageArrays = jsonObject.getJSONArray("images");
-                        images = getImageFromJson(imageArrays);
-                    }
-                    comicsList.add(new Comics(id, title, description, textObjectList,
-                            new Thumbnail(path, extension), images));
-                }
-            }
-        }
-        return comicsList;
-    }
-    
-    private static List<Image> getImageFromJson(JSONArray result) throws JSONException {
-        List<Image> images = new ArrayList<>();
-        for (int i = 0; i < result.length(); i++) {
-            String path = null;
-            String extension = null;
-            JSONObject object = result.getJSONObject(i);
-            if (object.has("path")) {
-                path = object.getString("path");
-            }
-            if (object.has("extension")) {
-                extension = object.getString("extension");
-            }
-            images.add(new Image(path, extension));
-        }
-        return images;
-    }
-    
-    private static List<TextObject> getTextObject(JSONArray result) throws JSONException {
-        List<TextObject> objects = new ArrayList<>();
-        for (int i = 0; i < result.length(); i++) {
-            String text = null;
-            JSONObject object = result.getJSONObject(i);
-            if (object.has("text")) {
-                text = object.getString("text");
-            }
-            objects.add(new TextObject(text));
-        }
-        return objects;
     }
     
     public long getId() {

@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "328124591702",
+    "firebase_url": "https://discovercomics-e46b1.firebaseio.com",
+    "project_id": "discovercomics-e46b1",
+    "storage_bucket": "discovercomics-e46b1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:328124591702:android:2aab8dd9c008bec6",
+        "android_client_info": {
+          "package_name": "com.project.djoum.discovercomics"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "328124591702-thl9it3h3i38vp4too7f8hn49fustp9t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBjDkan_wv2x86N82EO8Qh-fRyKE0dX35Q"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

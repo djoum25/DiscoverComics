@@ -12,7 +12,6 @@ public class Url implements Parcelable {
         public Url createFromParcel(Parcel in) {
             return new Url(in);
         }
-        
         public Url[] newArray(int size) {
             return (new Url[size]);
         }

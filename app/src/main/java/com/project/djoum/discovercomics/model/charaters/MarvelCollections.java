@@ -1,4 +1,4 @@
-package com.project.djoum.discovercomics.model.series;
+package com.project.djoum.discovercomics.model.charaters;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,18 +7,19 @@ import com.project.djoum.discovercomics.model.comics.Item;
 
 import java.util.List;
 
-public class Stories implements Parcelable {
+public class MarvelCollections implements Parcelable {
     
-    public final static Parcelable.Creator<Stories> CREATOR = new Creator<Stories>() {
+    public final static Parcelable.Creator<MarvelCollections> CREATOR = new Creator<MarvelCollections>() {
+        
         @SuppressWarnings({
                 "unchecked"
         })
-        public Stories createFromParcel(Parcel in) {
-            return new Stories(in);
+        public MarvelCollections createFromParcel(Parcel in) {
+            return new MarvelCollections(in);
         }
         
-        public Stories[] newArray(int size) {
-            return (new Stories[size]);
+        public MarvelCollections[] newArray(int size) {
+            return (new MarvelCollections[size]);
         }
         
     };
@@ -27,7 +28,7 @@ public class Stories implements Parcelable {
     private List<Item> items = null;
     private long returned;
     
-    protected Stories(Parcel in) {
+    protected MarvelCollections(Parcel in) {
         this.available = ((long) in.readValue((long.class.getClassLoader())));
         this.collectionURI = ((String) in.readValue((String.class.getClassLoader())));
         in.readList(this.items, (com.project.djoum.discovercomics.model.comics.Item.class.getClassLoader()));
@@ -37,7 +38,7 @@ public class Stories implements Parcelable {
     /**
      * No args constructor for use in serialization
      */
-    public Stories() {
+    public MarvelCollections() {
     }
     
     /**
@@ -46,7 +47,7 @@ public class Stories implements Parcelable {
      * @param available
      * @param returned
      */
-    public Stories(long available, String collectionURI, List<Item> items, long returned) {
+    public MarvelCollections(long available, String collectionURI, List<Item> items, long returned) {
         super();
         this.available = available;
         this.collectionURI = collectionURI;
