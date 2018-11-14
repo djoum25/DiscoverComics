@@ -36,6 +36,11 @@ public class Characters implements Parcelable {
     public Characters() {
     }
     
+    
+    public Characters(List<Item> items) {
+        this.items = items;
+    }
+    
     /**
      * @param items
      * @param collectionURI

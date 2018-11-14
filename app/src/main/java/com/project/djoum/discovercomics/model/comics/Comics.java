@@ -161,6 +161,19 @@ public class Comics implements Parcelable {
         this.images = images;
     }
     
+    public Comics(long id, String title, String description, List<TextObject> textObjects,
+                  String resourceURI, Thumbnail thumbnail, List<Image> images, Creators creators, Characters characters) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.textObjects = textObjects;
+        this.resourceURI = resourceURI;
+        this.thumbnail = thumbnail;
+        this.images = images;
+        this.creators = creators;
+        this.characters = characters;
+    }
+    
     public long getId() {
         return id;
     }
@@ -400,6 +413,10 @@ public class Comics implements Parcelable {
     
     public int describeContents() {
         return 0;
+    }
+    
+    public Image getTheImage() {
+        return this.getImages().get(images.size() - 1);
     }
 }
 

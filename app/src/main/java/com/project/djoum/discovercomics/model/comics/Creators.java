@@ -36,6 +36,10 @@ public class Creators implements Parcelable {
     public Creators() {
     }
     
+    public Creators(List<Item> items) {
+        this.items = items;
+    }
+    
     /**
      * @param items
      * @param collectionURI
@@ -92,5 +96,6 @@ public class Creators implements Parcelable {
     public int describeContents() {
         return 0;
     }
+    
     
 }

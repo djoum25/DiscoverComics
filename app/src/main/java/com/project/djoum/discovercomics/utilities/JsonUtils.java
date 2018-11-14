@@ -1,7 +1,10 @@
 package com.project.djoum.discovercomics.utilities;
 
+import com.project.djoum.discovercomics.model.comics.Characters;
 import com.project.djoum.discovercomics.model.comics.Comics;
+import com.project.djoum.discovercomics.model.comics.Creators;
 import com.project.djoum.discovercomics.model.comics.Image;
+import com.project.djoum.discovercomics.model.comics.Item;
 import com.project.djoum.discovercomics.model.comics.TextObject;
 import com.project.djoum.discovercomics.model.comics.Thumbnail;
 
@@ -34,6 +37,9 @@ public class JsonUtils {
         String resourceUri;
         List<Image> images = null;
         List<TextObject> textObjectList = null;
+        Characters characters = null;
+        List<Item> items = null;
+        List<Item> characterItems = null;
         
         if (comicsOject.has("data")) {
             JSONObject data = comicsOject.getJSONObject("data");
@@ -64,9 +70,25 @@ public class JsonUtils {
                         JSONArray imageArrays = jsonObject.getJSONArray("images");
                         images = getImageFromJson(imageArrays);
                     }
+    
+                    if (jsonObject.has("creators")) {
+                        JSONObject creators = jsonObject.getJSONObject("creators");
+                        if (creators.has("items")) {
+                            JSONArray itemArray = creators.getJSONArray("items");
+                            items = getItemsFromJson(itemArray);
+                        }
+                    }
+    
+                    if (jsonObject.has("characters")) {
+                        JSONObject character = jsonObject.getJSONObject("characters");
+                        if (character.has("items")) {
+                            JSONArray itemArray = character.getJSONArray("items");
+                            characterItems = getItemsFromJson(itemArray);
+                        }
+                    }
                     // TODO: 9/17/18 check the list whenever more object added
                     comicsList.add(new Comics(id, title, description, textObjectList, resourceUri,
-                            new Thumbnail(path, extension), images));
+                            new Thumbnail(path, extension), images, new Creators(items), new Characters(characterItems)));
                 }
             }
         }
@@ -112,6 +134,34 @@ public class JsonUtils {
             images.add(new Image(path, extension));
         }
         return images;
+    }
+    
+    /**
+     * this method will return an array of creators
+     *
+     * @param result
+     * @return
+     */
+    public static List<Item> getItemsFromJson(JSONArray result) throws JSONException {
+        List<Item> thisItems = new ArrayList<>();
+        Creators creators = null;
+        for (int i = 0; i < result.length(); i++) {
+            String name = null;
+            String role = null;
+            JSONObject object = result.getJSONObject(i);
+            if (object.has("name")) {
+                name = object.getString("name");
+            }
+            if (object.has("role")) {
+                role = object.getString("role");
+            }
+            if (role != null) {
+                thisItems.add(new Item(name, role));
+            } else {
+                thisItems.add(new Item(name));
+            }
+        }
+        return thisItems;
     }
     
     /**

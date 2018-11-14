@@ -13,25 +13,29 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.project.djoum.discovercomics.IMainActivity;
 import com.project.djoum.discovercomics.R;
+import com.project.djoum.discovercomics.fragment.ComicDetailsFragment;
 import com.project.djoum.discovercomics.fragment.MainFragment;
+import com.project.djoum.discovercomics.model.comics.Comics;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
-    private static final String TAG = "test";
+        implements NavigationView.OnNavigationItemSelectedListener,
+                           IMainActivity,
+                           ComicDetailsFragment.OnComicDetailsFragmentInteractionListener {
+    private static final String TAG = "MainActivity";
     //    private final String PUBLIC_KEY = getString(R.string.public_key);
 //    private final String PRIVATE_KEY = getString(R.string.private_key);
     private TextView mUserName;
     private TextView mUserEmail;
-    
     private FirebaseAuth mAuth;
     private FirebaseUser mUser;
     private View mHearderView;
     private NavigationView mNavigationView;
-    
     
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,58 +56,6 @@ public class MainActivity extends AppCompatActivity
         mNavigationView.setNavigationItemSelectedListener(this);
         //init main fragment
         initialize();
-
-//        try {
-//            Log.d(TAG, "onCreate: series " +
-//                               NetworkUtils.seriesUrl("title", PUBLIC_KEY, PRIVATE_KEY));
-//            Log.d(TAG, "onCreate: a serie " + NetworkUtils.seriesUrl(7, PUBLIC_KEY, PRIVATE_KEY));
-//            Log.d(TAG, "onCreate: single comic " + NetworkUtils.comicUrl(53427, PUBLIC_KEY, PRIVATE_KEY));
-////
-//            Log.d(TAG, "onCreate: characters " + NetworkUtils.charactersUrl("name", PUBLIC_KEY, PRIVATE_KEY));
-//        } catch (NoSuchAlgorithmException | MalformedURLException e) {
-//            e.printStackTrace();
-//        }
-
-//https://gateway.marvel.com:443/v1/public/series?contains=digital%20comic&orderBy=title
-//         &apikey=006ac57c9d265881686e05e0c49b6e5b
-//        if (NetworkUtils.isConnectionAvaillable(this)) {
-////            try {
-////                NetworkUtils.queryUrl(NetworkUtils.comicsUrl(2018, "title",
-////                        getString(R.string.public_key), getString(R.string.private_key))).enqueue(new Callback() {
-////                    @Override
-////                    public void onFailure(@NonNull Call call, IOException e) {
-////                        Log.d(TAG, "onFailure: " + e.getMessage());
-////                    }
-////
-////                    @Override
-////                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-////                        try {
-////                            List<Comics> comics = JsonUtils.jsonToComics(response.body().string());
-////                            for (Comics comic : comics) {
-////                                Log.d(TAG, "onResponse: id " + comic.getId());
-////                                Log.d(TAG, "onResponse: " + comic.getTitle());
-////                                long timeStamp = System.currentTimeMillis();
-////                                Log.d(TAG, "onResponse: ressouUri " +
-////                                                   NetworkUtils.comicsResourceUri(comic.getResourceURI(), timeStamp, getString(R.string.public_key), getString(R.string.private_key)));
-////                                Log.d(TAG, "onResponse: description " + comic.getDescription());
-////                                Log.d(TAG, "onResponse: thumbnail " + comic.getThumbnail());
-////                                Log.d(TAG, "\t\t\t=========================images====================\n\n\n\n");
-////                                for (Image image : comic.getImages()) {
-////                                    Log.d(TAG, "onResponse: " + image.imageToDisplay(getString(R.string.image_standard_fantastic)));
-////                                }
-////                                Log.d(TAG, "\t\t\t=========================images====================\n\n\n\n");
-////                                Log.d(TAG, "onResponse: text " + comic.getTextObjects());
-////                                Log.d(TAG, "\t\t\t=========================end====================\n\n\n\n");
-////                            }
-////                        } catch (JSONException | NoSuchAlgorithmException e) {
-////                            e.printStackTrace();
-////                        }
-////                    }
-////                });
-////            } catch (IOException | NoSuchAlgorithmException e) {
-////                e.printStackTrace();
-////            }
-////        }
     }
     
     public void initialize() {
@@ -150,11 +102,13 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
     
+    
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-    
+        
         if (id == R.id.action_settings) {
+            Toast.makeText(this, "this is the setting", Toast.LENGTH_SHORT).show();
             return true;
         } else if (id == R.id.action_sign_out) {
             mAuth.signOut();
@@ -197,6 +151,15 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+    
+    @Override
+    public void comicDetails(Comics comic) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.main_container, ComicDetailsFragment.newInstance(comic))
+                .addToBackStack(null)
+                .commit();
+        
     }
 
 //    public boolean isConnectionAvaillable() {

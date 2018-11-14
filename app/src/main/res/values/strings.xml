@@ -57,5 +57,13 @@
     <string name="log_in">Log in</string>
     <string name="logo">logo</string>
     
+    <string name="sample_text_for_list">Amazing Spider-Man Annual (2018)</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="sample_text">This is a sample text to show</string>
+    <string name="comic_descripition">Comic descripition</string>
+    <string name="creator">Creator</string>
+    <string name="favorite">Fav</string>
 
 </resources>

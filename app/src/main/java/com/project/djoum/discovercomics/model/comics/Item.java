@@ -35,6 +35,15 @@ public class Item implements Parcelable {
     public Item() {
     }
     
+    public Item(String name, String role) {
+        this.name = name;
+        this.role = role;
+    }
+    
+    public Item(String name) {
+        this.name = name;
+    }
+    
     /**
      * @param resourceURI
      * @param name
@@ -73,7 +82,7 @@ public class Item implements Parcelable {
     }
     
     public String getRole() {
-        return role;
+        return " (" + role + ")";
     }
     
     public void setRole(String role) {
@@ -90,5 +99,6 @@ public class Item implements Parcelable {
     public int describeContents() {
         return 0;
     }
+    
     
 }

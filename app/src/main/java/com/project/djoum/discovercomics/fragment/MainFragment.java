@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.project.djoum.discovercomics.R;
+import com.project.djoum.discovercomics.adapter.ComicsAdapter;
 import com.project.djoum.discovercomics.databinding.FragmentMainBinding;
 import com.project.djoum.discovercomics.model.comics.Comics;
 import com.project.djoum.discovercomics.utilities.JsonUtils;
@@ -19,9 +20,10 @@ import com.project.djoum.discovercomics.utilities.NetworkUtils;
 import org.json.JSONException;
 
 import java.io.IOException;
-import java.net.URL;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -36,6 +38,7 @@ public class MainFragment extends Fragment implements OnRefreshListener {
     private static final String TAG = "MainFragment";
     private FragmentMainBinding mBinding;
     private List<Comics> mComics;
+    int aRandomYear;
     
     public MainFragment() {
         // Required empty public constructor
@@ -48,8 +51,7 @@ public class MainFragment extends Fragment implements OnRefreshListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        
+        aRandomYear = getARandomYear();
     }
     
     @Override
@@ -57,9 +59,15 @@ public class MainFragment extends Fragment implements OnRefreshListener {
                              Bundle savedInstanceState) {
         mBinding = FragmentMainBinding.inflate(inflater);
         mBinding.swipeRefreshLayout.setOnRefreshListener(this);
+        updateUi();
+        return mBinding.getRoot();
+    }
+    
+    private void updateUi() {
         if (NetworkUtils.isConnectionAvaillable(this.getActivity())) {
             try {
-                NetworkUtils.queryUrl(NetworkUtils.comicsUrl(2018, "title",
+                Log.d(TAG, "updateUi: before calling updateUi " + aRandomYear);
+                NetworkUtils.queryUrl(NetworkUtils.comicsUrl(aRandomYear, "title",
                         getString(R.string.public_key), getString(R.string.private_key))).enqueue(new Callback() {
                     @Override
                     public void onFailure(@NonNull Call call, IOException e) {
@@ -68,17 +76,11 @@ public class MainFragment extends Fragment implements OnRefreshListener {
                     
                     @Override
                     public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        Log.d(TAG, "response from the web " + response);
                         try {
-                            List<Comics> comics = JsonUtils.jsonToComics(response.body().string());
-                            mBinding.setComics(comics);
-                            for (Comics comic : comics) {
-                                Log.d(TAG, "onResponse: id " + comic.getId());
-                                Log.d(TAG, "onResponse: " + comic.getTitle());
-                                long timeStamp = System.currentTimeMillis();
-                                URL comicsResourceUri = NetworkUtils.comicsResourceUri(comic.getResourceURI(),
-                                        timeStamp, getString(R.string.public_key), getString(R.string.private_key));
-                            }
-                        } catch (JSONException | NoSuchAlgorithmException e) {
+                            mComics = JsonUtils.jsonToComics(response.body().string());
+                            mBinding.setComics(mComics);
+                        } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
@@ -87,12 +89,25 @@ public class MainFragment extends Fragment implements OnRefreshListener {
                 e.printStackTrace();
             }
         }
-        return mBinding.getRoot();
     }
     
     @Override
     public void onRefresh() {
-        (mBinding.mainList.getAdapter()).notifyDataSetChanged();
-        mBinding.swipeRefreshLayout.setRefreshing(false);
+        aRandomYear = getARandomYear();
+        List<Comics> testList = new ArrayList<>();
+        if (mComics != null) {
+            testList.addAll(mComics);
+            ((ComicsAdapter) mBinding.mainList.getAdapter()).refreshListOfComics(testList);
+            updateUi();
+            (mBinding.mainList.getAdapter()).notifyDataSetChanged();
+            mBinding.swipeRefreshLayout.setRefreshing(false);
+        }
+    }
+    
+    public int getARandomYear() {
+        Random rand = new Random();
+        int max = 2018;
+        int min = 2008;
+        return rand.nextInt((max - min) + 1) + min;
     }
 }
